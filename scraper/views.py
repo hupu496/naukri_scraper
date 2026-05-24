@@ -1,5 +1,6 @@
 import json
 from django.shortcuts import render, redirect
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from apify_client import ApifyClient
 from openpyxl import Workbook
@@ -147,20 +148,49 @@ def candidate_list(request):
 
 def view_resume(request, candidate_id):
     candidate = get_object_or_404(Candidate, id=candidate_id)
-    data = candidate.raw_data
+
+    # raw_data may already be dict or string
+    data = candidate.raw_data or {}
+
+    if isinstance(data, str):
+        import json
+        try:
+            data = json.loads(data)
+        except:
+            data = {}
+
+    # Safe location extraction
+    location = ""
+    if isinstance(data.get('location'), dict):
+        location = data.get('location', {}).get('linkedinText', '')
+    else:
+        location = data.get('location', '')
+
+    # Profile Image
+    profile_picture = None
+    if isinstance(data.get('profilePicture'), dict):
+        profile_picture = data.get('profilePicture', {}).get('url')
 
     context = {
         'candidate': candidate,
-        'data': data,
-        'name': data.get('fullName') or f"{data.get('firstName','')} {data.get('lastName','')}",
+        'name': f"{data.get('firstName', '')} {data.get('lastName', '')}",
         'headline': data.get('headline'),
-        'location': data.get('location', {}).get('linkedinText') if isinstance(data.get('location'), dict) else data.get('location'),
+        'location': location,
         'about': data.get('about'),
+        'linkedin_url': data.get('linkedinUrl'),
+        'connections': data.get('connectionsCount'),
+        'followers': data.get('followerCount'),
+        'profile_picture': profile_picture,
+
+        # Sections
         'experience': data.get('experience', []),
         'education': data.get('education', []),
         'skills': data.get('skills', []),
-        'profile_picture': data.get('profilePicture', {}).get('url') if isinstance(data.get('profilePicture'), dict) else None,
+        'certifications': data.get('certifications', []),
+        'projects': data.get('projects', []),
+        'languages': data.get('languages', []),
     }
+
     return render(request, 'scraper/resume.html', context)
 
 # ====================== Keep these functions unchanged ======================
@@ -193,9 +223,6 @@ def export_excel(request):
     return response
 
 
-def candidate_list(request):
-    candidates = Candidate.objects.all().order_by('-scraped_at')
-    return render(request, 'scraper/candidate_list.html', {'candidates': candidates})
 
 
 def clear_data(request):

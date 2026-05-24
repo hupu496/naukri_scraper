@@ -8,6 +8,7 @@ urlpatterns = [
     
     # Optional: View all saved candidates
     path('candidates/', views.candidate_list, name='candidate_list'),
+    path('resume/<int:candidate_id>/', views.view_resume, name='view_resume'),
     
     # Optional: Delete all candidates (use carefully)
     path('clear-data/', views.clear_data, name='clear_data'),
