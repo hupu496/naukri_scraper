@@ -4,3 +4,11 @@
 <img width="1366" height="768" alt="Screenshot (22)" src="https://github.com/user-attachments/assets/aa949a8e-1536-4999-9c74-de263a18d3b1" />
 <img width="1366" height="768" alt="Screenshot (23)" src="https://github.com/user-attachments/assets/623213e2-d31b-44ad-b2fa-fc1cb4e74400" />
 <img width="1366" height="768" alt="Screenshot (24)" src="https://github.com/user-attachments/assets/160f25ce-8107-4185-834c-dad280d93f34" />
+🤝 Hire the Developer
+Looking for a custom Django solution for your business? Let's connect!
+
+📧 Email: aadarsh629@gmail.com
+
+📞 Phone: +91 7999669691
+
+💼 Availability: Freelance / Contract Projects Available
